@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AviaFly</title>
+<meta charset="UTF-8">
+<meta content="yes" name="mobile-web-app-capable">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<link href="data:," rel="shortcut icon">
+<meta content="user-scalable=no, width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover" name="viewport">
+<style>
+  body {background-color: #13286a; margin: 0; overflow: hidden}
+  .preloader { display: none !important; }
+  /* AviaFly loader: one canvas (html/LocalAviaGame/loader/avia-loader.js) */
+  #avia-loader { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 2000; display: block; touch-action: none; }
+</style>
+<!-- Локальная версия: открывается двойным кликом, сервер не нужен. avia-local.js — JS-сервер, кошелёк,
+     выдача файлов и панель настроек; avia-assets.js / avia-portal.js / avia-game.js собирает
+     node tools/build-local.mjs. Версия для node server.js — index-server.html. -->
+<script src="avia-assets-1.js"></script>
+<script src="avia-assets-2.js"></script>
+<script src="avia-assets-3.js"></script>
+<script>
+// api / resources_path / currency below are replaced by avia-local.js (virtual site https://avia.local)
+window.__OPTIONS__ = {
+  "env": "production",
+  "server_id": "local",
+  "play_token": "local",
+  "game": "casual/local_avia_game",
+  "identifier": "LocalAviaGame",
+  "title": "LocalAviaGame",
+  "currency": "VES",
+  "balance_polling_interval": 30000,
+  "cache_id": "local",
+  "cache_player_id": "local",
+  "api": location.origin + "/api",
+  "rules_url": null,
+  "deposit_url": null,
+  "games_page_url": null,
+  "history_url": null,
+  "resources_path": location.origin + "/html/LocalAviaGame",
+  "ui": {
+    "home_button": false,
+    "full_screen_prompt": true,
+    "logo": "hidden",
+    "skin": "basic",
+    "skins": ["basic", "speed_1", "speed_2", "speed_3", "speed_4"],
+    "brand_logo": null,
+    "brand": {"name": "", "logo": null, "logo_in_game": null},
+    "autospins_dialog": "standard",
+    "autospin_values": ["10", "25", "50", "100", "250", "500", "750", "1000", "∞"],
+    "gamble_enabled": true,
+    "show_rtp_in_rules": true
+  },
+  "custom": {},
+  "actual_currency_rate": 1.0,
+  "sound_enabled": true,
+  "digit_options": {"balance": 2},
+  "provable_fair": {"verify_url": null},
+  "math": {"rtp": {"main": 97.0}, "max_multiplier": 250.0},
+  "rules": {"min_bet": 10, "max_bet": 10000000, "currency": {"code": "VES", "symbol": "Bs.", "subunits": 100, "exponent": 2}},
+  "version": "1.0.0",
+  "locale": "es",
+  "actions": {"deposit": null, "return": null, "history": null},
+  "show_paytable": false,
+  "license_rules": {
+    "rules_section": {"show_license_requirements": false, "show_rtp": ["main_rtp", "chance_rtp", "bonus_rtp"], "show_gamble_round": true, "show_max_multiplier": true},
+    "screen_section": {"show_rtp_on_main_screen": false},
+    "lines_count": "60"
+  },
+  "open_page_method": "redirect",
+  "reset_bet_to_default": false,
+  "available_games_to_switch": []
+};
+</script>
+<script src="avia-local.js"></script>
+<script src="avia-portal.js"></script>
+</head>
+<body>
+<canvas id="avia-loader"></canvas>
+<script src="avia-loader.js"></script><div class="preloader">
+  <div class="preloader_figure"></div>
+  <p class="preloader_label">Loading</p>
+</div>
+<script defer src="avia-game.js"></script>
+</body>
+</html>

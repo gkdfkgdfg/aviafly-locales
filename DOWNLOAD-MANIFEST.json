@@ -1,0 +1,47 @@
+{
+  "source": "https://aviajdsfkjsfd.vercel.app/",
+  "date": "2026-11-16",
+  "note": "Public client files, including the embedded local virtual server and assets. Private deployment files are not exposed.",
+  "files": [
+    {
+      "file": "index.html",
+      "bytes": 3462,
+      "sha256": "093f5f0dc7a360e906cd1bc135d3eb0274a52f6596c113c716a36333f9adce76"
+    },
+    {
+      "file": "avia-assets-1.js",
+      "bytes": 20961297,
+      "sha256": "07cb716731527dd4231245d2e4bb332b2eb5069f8bac29e421faf66a64953430"
+    },
+    {
+      "file": "avia-assets-2.js",
+      "bytes": 19859329,
+      "sha256": "0fd13a2dcbb2b24d04c6c8072769d87d492e0cbc56938dea76f2056adeca524a"
+    },
+    {
+      "file": "avia-assets-3.js",
+      "bytes": 7442382,
+      "sha256": "a7782d4b8c71c2f5309b898a3378d3c7f2a7a84fe6231013993c4643779bf539"
+    },
+    {
+      "file": "avia-local.js",
+      "bytes": 34025,
+      "sha256": "5a66cb42bd1f72b076c52c81dc5f7c68b828705c1286155f83d9e153d156bff2"
+    },
+    {
+      "file": "avia-portal.js",
+      "bytes": 1545773,
+      "sha256": "2e847aa04aaf11f2e19ac55e128fe4518b29df8000bda6502fac4296da8faebb"
+    },
+    {
+      "file": "avia-loader.js",
+      "bytes": 12567,
+      "sha256": "5edb834b03ef2eff33c917b27c510c8156a0540f7c7442442542dcafb63e2cd9"
+    },
+    {
+      "file": "avia-game.js",
+      "bytes": 1777090,
+      "sha256": "96302f5a6bb8934aa0d693e20b106186c7f457f85ec49ff1197acf44d134868a"
+    }
+  ]
+}
