@@ -72,7 +72,7 @@
     }
     const gap = target - shown;
     if (gap > 0) shown += Math.min(gap, Math.max(gap * dt * 2.2, dt * 6), dt * 38);   // smooth: 6..38 % per second
-    if (target < 100 && shown >= target - 1) shown += dt * 5 * Math.max(0, 1 - shown / 96);   // waiting for a big part: keeps moving, slowing near the end
+    shown = Math.min(shown, target); // Never drift to a fake 95% while an asset is stalled.
     if (go && target >= 100 && shown > 99.6) shown = 100;
     if (shown === 100 && go) ready = Math.min(1, ready + dt * 2.2);
     if (switching) {
@@ -187,6 +187,7 @@
     const pt = e.changedTouches ? e.changedTouches[0] : e;
     const r = C.getBoundingClientRect(), x = pt.clientX - r.left, y = pt.clientY - r.top;
     if (!btn || x < btn.x || x > btn.x + btn.w || y < btn.y || y > btn.y + btn.h) return;
+    window.__aviaUnlockAudio?.();
     const f = go; go = null;
     switching = true; switchAt = performance.now();
     f();

@@ -23,6 +23,18 @@ for(const lang of ['pl','sr','cs','it'])test(lang+': translates settings, rules,
 test('URL language overrides saved preference; saved preference survives new URLs; invalid language falls back',()=>{
  assert.equal(boot('?lang=cs','pl').i18n.lang,'cs');assert.equal(boot('','sr').i18n.lang,'sr');assert.equal(boot('?lang=it-IT').i18n.lang,'it');assert.equal(boot('?lang=unknown').i18n.lang,'en');assert.equal(boot().i18n.lang,'es');
 });
+
+test('every selectable language has an embedded engine dictionary, including the Russian launch URL',()=>{
+ const {i18n}=boot();
+ for(const lang of Object.keys(i18n.names)){
+  const {win}=boot('?lang='+lang);
+  const entry=win.__AVIA_ASSETS__['shared/translations/LocalAviaGame/'+lang+'.json'];
+  assert.ok(entry,'missing embedded engine dictionary for '+lang);
+  const engine=JSON.parse(Buffer.from(entry[1],'base64').toString('utf8'));
+  assert.ok(engine.panel.balance);
+  if(lang==='ru')assert.equal(engine.panel.balance,'Баланс');
+ }
+});
 test('all new locale files have the same complete structure and preserve source game amounts',()=>{
  const flatten=o=>Object.entries(o).flatMap(([k,v])=>v&&typeof v==='object'&&!Array.isArray(v)?flatten(v).map(p=>k+'.'+p):[k]).sort();
  const packs=['pl','sr','cs','it'].map(lang=>JSON.parse(fs.readFileSync(path.join(root,'locales',lang+'.json'),'utf8')));

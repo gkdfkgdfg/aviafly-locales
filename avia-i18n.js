@@ -34,7 +34,7 @@
     return {...pack,settings:`<h2>${pack.settings}</h2><div class="ah-row"><img src="${IMG}btn_sound_on.webp" alt=""><label>${pack.sounds}</label><input aria-label="${pack.sounds}" class="ah-range" type="range" min="0" max="100" data-v="fx"></div><div class="ah-row"><img src="${IMG}btn_sound_on.webp" alt=""><label>${pack.music}</label><input aria-label="${pack.music}" class="ah-range" type="range" min="0" max="100" data-v="music"></div><div class="ah-sub">${pack.how}</div><div class="ah-rules">${pack.rules.join('<br>')}</div>`};
   }
   function decorateHUD(root) {
-    const labels = pack || {menu:'Settings',sounds:'Sound',minus:'Decrease bet',plus:'Increase bet',play:'Play',auto:'Autoplay',balance:'Balance',altitude:'Altitude',distance:'Distance'};
+    const labels = pack || (lang==='ru'?{menu:'Настройки',sounds:'Звук',minus:'Уменьшить ставку',plus:'Увеличить ставку',play:'Играть',auto:'Автоигра',balance:'Баланс',altitude:'Высота',distance:'Дистанция'}:null) || {menu:'Settings',sounds:'Sound',minus:'Decrease bet',plus:'Increase bet',play:'Play',auto:'Autoplay',balance:'Balance',altitude:'Altitude',distance:'Distance'};
     for (const [key,value] of Object.entries({menu:pack?.walletTitle||labels.menu,sound:labels.sounds,minus:labels.minus,plus:labels.plus,spin:labels.play,auto:labels.auto,bal:labels.balance,alt:labels.altitude,dist:labels.distance})) {
       const node = root.querySelector(`[data-k="${key}"]`); if (node && value) {node.setAttribute('aria-label',value);node.title=value;}
     }
@@ -46,12 +46,16 @@
   }
   // Supply the engine's ordinary dialogs and errors through its existing locale loader.
   const source = window.__AVIA_ASSETS__['shared/translations/LocalAviaGame/en.json'];
-  if (pack && source) {
+  // The source has Russian HUD text but only ships English/Spanish engine dictionaries.
+  const engineText = pack || (lang === 'ru' ? {
+    loading:'Загрузка',altitude:'Высота',distance:'Дистанция',balance:'Баланс',continue:'Продолжить',stop:'Остановить',confirm:'Подтвердить',cancel:'Отмена',apply:'Применить',win:'Выигрыш',settings:'Настройки',music:'Музыка',sounds:'Звуки',autoTitle:'Автоигра',bet:'Ставка',funds:'Недостаточно средств.',loadingError:'ОШИБКА ЗАГРУЗКИ',error:'Произошла ошибка. Обновите страницу.',titles:{big:'БОЛЬШОЙ ВЫИГРЫШ',mega:'МЕГА ВЫИГРЫШ',super:'СУПЕР ВЫИГРЫШ'}
+  } : null);
+  if (engineText && source) {
     const base = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(source[1]),ch=>ch.charCodeAt(0))));
     const put=(key,value)=>{const parts=key.split('.');let at=base;for(const part of parts.slice(0,-1))at=at[part]||(at[part]={});at[parts.at(-1)]=value;};
-    const values={'loading':pack.loading,'localaviagame.altitude':pack.altitude,'localaviagame.distance':pack.distance,'panel.balance':pack.balance,'buttons.ok':'OK','buttons.resume':pack.continue,'buttons.pause':pack.stop,'confirm':pack.confirm,'cancel':pack.cancel,'save':pack.apply,'win':pack.win,'total_win':pack.win,'settings.labels.settings':pack.settings,'settings.labels.music':pack.music,'settings.labels.sound_fx':pack.sounds,'settings.labels.auto_play':pack.autoTitle,'settings.bet.total_bet':pack.bet,'slot.popups.buy_bonus.not_enough':pack.funds,'slot.popups.buy_bonus.cancel':pack.cancel,'slot.popups.big_win':pack.titles.big,'slot.popups.mega_win':pack.titles.mega,'slot.popups.super_win':pack.titles.super,'slot.click_to_continue':pack.continue,'slot.tap_to_continue':pack.continue};
+    const values={'loading':engineText.loading,'localaviagame.altitude':engineText.altitude,'localaviagame.distance':engineText.distance,'panel.balance':engineText.balance,'buttons.ok':'OK','buttons.resume':engineText.continue,'buttons.pause':engineText.stop,'confirm':engineText.confirm,'cancel':engineText.cancel,'save':engineText.apply,'win':engineText.win,'total_win':engineText.win,'settings.labels.settings':engineText.settings,'settings.labels.music':engineText.music,'settings.labels.sound_fx':engineText.sounds,'settings.labels.auto_play':engineText.autoTitle,'settings.bet.total_bet':engineText.bet,'slot.popups.buy_bonus.not_enough':engineText.funds,'slot.popups.buy_bonus.cancel':engineText.cancel,'slot.popups.big_win':engineText.titles.big,'slot.popups.mega_win':engineText.titles.mega,'slot.popups.super_win':engineText.titles.super,'slot.click_to_continue':engineText.continue,'slot.tap_to_continue':engineText.continue};
     for(const [key,value] of Object.entries(values))put(key,value);
-    for(const section of ['errors','errors-no-code'])for(const key of Object.keys(base[section]||{}))base[section][key]=key.startsWith('301')?pack.funds:key==='loading_error'?pack.loadingError:pack.error;
+    for(const section of ['errors','errors-no-code'])for(const key of Object.keys(base[section]||{}))base[section][key]=key.startsWith('301')?engineText.funds:key==='loading_error'?engineText.loadingError:engineText.error;
     const data = new TextEncoder().encode(JSON.stringify(base)); let binary='';for(const byte of data)binary+=String.fromCharCode(byte);
     window.__AVIA_ASSETS__[`shared/translations/LocalAviaGame/${lang}.json`]=['application/json',btoa(binary)];
   }

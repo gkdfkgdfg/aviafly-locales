@@ -2,7 +2,7 @@
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path');
 const root=__dirname;
 const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.json':'application/json; charset=utf-8'};
-const files=new Set(['index.html','avia-assets-1.js','avia-assets-2.js','avia-assets-3.js','avia-i18n.js','avia-local.js','avia-loader.js','avia-game.js','avia-portal.js']);
+const files=new Set(['index.html','avia-assets-1.js','avia-assets-2.js','avia-assets-3.js','avia-i18n.js','avia-local.js','avia-loader.js','avia-game.js','avia-portal.js','avia-audio.js']);
 function createServer(){return http.createServer((req,res)=>{
   let name;try{name=decodeURIComponent(new URL(req.url,'http://localhost').pathname).replace(/^\//,'')||'index.html';}catch{res.writeHead(400).end();return;}
   if(!['GET','HEAD'].includes(req.method)){res.writeHead(405,{Allow:'GET, HEAD'}).end();return;}

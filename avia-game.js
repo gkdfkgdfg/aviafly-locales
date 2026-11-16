@@ -6552,7 +6552,7 @@ void main() {
               return 0;
             }
           }
-          return sndKeys.filter((k2) => Lib.getSound(k2).audioBuffer).length / sndKeys.length;
+          return sndKeys.filter((k2) => window.AviaAudio.ready(Lib.getSound(k2))).length / sndKeys.length;
         });
       }
       COIN_SND = ["bonus/collect1", "bonus/collect-m1", "bonus/collect2", "bonus/collect-m2", "bonus/collect3", "bonus/collect-m3", "bonus/collect4", "bonus/collect-m4"];
@@ -29182,7 +29182,13 @@ void main(void)\r
       d1 = (i5) => {
         i5.name && (cA[i5.name] = i5);
       };
-      Ye2 = new AudioContext();
+      Ye2 = new (window.AudioContext || window.webkitAudioContext)();
+      window.__aviaUnlockAudio = () => {
+        try {
+          if (Ye2.state === "suspended" || Ye2.state === "interrupted") Promise.resolve(Ye2.resume()).catch(() => {});
+          game.Sound?._unlockSound();
+        } catch (_) {} // Audio failure must not consume the PLAY gesture.
+      };
       yt = (i5, e2, t = 0, s = i5.value) => {
         const r = Math.max(i5.__lastTimeTouch ? i5.__lastTimeTouch + 3e-3 : 0, Ye2.currentTime);
         if (t > 0 && r && !game.isMobile.apple.device) {
@@ -29211,18 +29217,17 @@ void main(void)\r
           Ii2(this, "audioBuffer"), Ii2(this, "source"), Ii2(this, "volumeNode"), Ii2(this, "src"), Ii2(this, "attempt", 0), Ii2(this, "loadingStarted", false), Ii2(this, "lastPlayStartFrame", 0), Ii2(this, "preciseDuration", 0), this.src = e2, this.onEnded = this.onEnded.bind(this), this.load();
         }
         load() {
-          this.loadingStarted = true, game.loadingAdd(this), fetch(this.src).then((e2) => e2.arrayBuffer()).then((e2) => {
-            Ye2.decodeAudioData(e2).then((t) => {
-              var s, r;
-              this.audioBuffer = t, (r = (s = game.classes) == null ? void 0 : s.BgMusic) == null || r._recalculateMusic(), game.loadingRemove(this);
-            }).catch(() => {
-              game.loadingRemove(this);
-            });
-          }).catch(() => {
-            this.attempt < 3 && !game._loadingErrorIsDisplayed && (this.attempt++, window.setTimeout(() => {
-              this.load();
-            }, this.attempt * 1e3)), game.loadingRemove(this);
+          if (this._loadPromise) return this._loadPromise;
+          this.loadingStarted = true;
+          game.loadingAdd(this);
+          this._loadPromise = window.AviaAudio.load(Ye2, this.src).then(buffer => {
+            this.audioBuffer = buffer;
+            if (buffer) game.classes?.BgMusic?._recalculateMusic();
+          }).catch(() => {}).finally(() => {
+            this.loadingComplete = true;
+            game.loadingRemove(this);
           });
+          return this._loadPromise;
         }
         stop() {
           this.source && (this.source.stop(), this.source.disconnect(), this.source = void 0);
@@ -30490,6 +30495,7 @@ void main(void)\r
         }
         _refreshLoadingProgress() {
           this.loadingProgress = this.loadingsInProgress ? Math.floor(this.loadingsFinished / this.loadingsInProgress * 100) : 0;
+          window.__aviaLoader?.progress(this.loadingProgress);
         }
         loadingRemove(e2) {
           this.loadingsFinished++, this.loadingsFinished === this.loadingsInProgress && game.projectDesc && Lib.scenes[game.projectDesc.mainScene] && game.emit("loading-finish"), this._refreshLoadingProgress();
