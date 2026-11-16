@@ -655,6 +655,7 @@
       <button class="spin" data-k="spin"><img src="${IMG}btn_play.webp" alt=""></button>
     </div>`;
     document.body.appendChild(root);
+    window.AviaI18n?.decorateHUD(root);
     for (const n of root.querySelectorAll("[data-k]")) el2[n.dataset.k] = n;
     const g = () => game.data.game;
     onTap(el2.minus, () => call(() => g().canDecreaseBet && g().decreaseBet()));
@@ -799,6 +800,7 @@
     <div class="bigbox"><div class="tw">${["big", "mega", "super", "max"].map((k2) => `<div class="title" data-t="${k2}" style="background-image:url(${IMG2}title_${k2}.webp)"><i></i></div>`).join("")}</div>
       <div class="plq"><b class="out" data-k="bigv"></b></div><div class="mult out" data-k="mult"></div></div>
     <div class="sm"><div class="glow"></div><div class="rb"><b class="out" data-k="smv"></b></div></div>`;
+    window.AviaI18n?.decorateWin(root2);
     document.body.appendChild(root2);
     for (const n of root2.querySelectorAll("[data-k]")) el3[n.dataset.k] = n;
     el3.titles = [...root2.querySelectorAll(".title")];
@@ -6109,7 +6111,7 @@ void main() {
       fmt = (v) => game.data.game && game.data.game.formatMoney ? game.data.game.formatMoney(v) : String(v);
       AUTO_COUNTS = [10, 25, 50, 100, 250, 500, 1e3, -1];
       auto = { count: 10, anyWin: false, single: "", up: "", down: "", balanceChange: 0, hooked: false };
-      LANG = { ru: "ru", es: "es" }[String(window.__OPTIONS__ && window.__OPTIONS__.locale || "en").slice(0, 2)] || "en";
+      LANG = { ru: "ru", es: "es", pl:"pl",sr:"sr",cs:"cs",it:"it" }[String(window.__OPTIONS__ && window.__OPTIONS__.locale || "en").slice(0, 2)] || "en";
       TEXTS = {
         ru: {
           settings: `
@@ -6178,6 +6180,7 @@ void main() {
         down: "El saldo baja",
         go: "INICIAR"
       };
+      if(window.AviaI18n?.pack)TEXTS[LANG]=AviaI18n.hud(IMG);
       T = TEXTS[LANG];
       T.auto = () => `
     <h2>${T.autoTitle}</h2>
@@ -30301,8 +30304,8 @@ void main(void)\r
 		<div class="loading-error-title" style="
 			margin: 2vh;
 			font-size:200%;">
-			LOADING ERROR</div>
-		<div class="loading-error-message">(click to reload)</div>
+			${window.AviaI18n?.pack?.loadingError||"LOADING ERROR"}</div>
+		<div class="loading-error-message">${window.AviaI18n?.pack?.reload||"(click to reload)"}</div>
 	</div>
 </div>`;
       vA = (i5) => i5() ? Promise.resolve() : new Promise((e2) => {

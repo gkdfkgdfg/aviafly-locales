@@ -161,7 +161,7 @@
   });
   new MutationObserver(function (recs) {
     recs.forEach(function (r) { r.addedNodes.forEach(fixStyleNode); if (r.type === "characterData" || r.target.tagName === "STYLE") { if (r.target.tagName === "STYLE") { r.target.__aviaFixed = false; fixStyleNode(r.target); } } });
-  }).observe(document.documentElement, { childList: true, subtree: true });
+  }).observe(document, { childList: true, subtree: true });
 
   if (IN_PORTAL) return; // дальше — только в странице игры
 
@@ -436,6 +436,7 @@
       '<button class="fp-wallet-second" type="button" data-game>Звук и правила</button></div>',
       "</form></section>",
     ].join("");
+    if(window.AviaI18n){b.innerHTML=AviaI18n.settingsMarkup(b.innerHTML);AviaI18n.bindLanguage(b)}
     document.body.appendChild(b);
     // клики по панели не должны доходить до игры под ней
     ["pointerdown", "pointerup", "touchstart", "touchend", "mousedown", "mouseup", "click", "keydown"].forEach(function (t) {
@@ -444,7 +445,7 @@
 
     var cur = b.querySelector("[data-cur]"), bal = b.querySelector("[data-bal]"), status = b.querySelector("[data-status]");
     function close() { b.classList.remove("is-open"); b.setAttribute("aria-hidden", "true"); }
-    function setStatus(msg, err) { status.textContent = msg; status.classList.toggle("is-error", !!err); }
+    function setStatus(msg, err) { status.textContent = window.AviaI18n ? AviaI18n.status(msg) : msg; status.classList.toggle("is-error", !!err); }
     b.querySelector(".fp-wallet-close").addEventListener("click", close);
     b.addEventListener("click", function (e) { if (e.target === b) close(); });
     b.querySelector("[data-game]").addEventListener("click", function () { close(); if (panel.openGame) panel.openGame(); });

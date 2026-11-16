@@ -20,18 +20,18 @@
     cloud: img(R + 'assets/avia/cloud_a_avia0001.png'),
   };
   const ok = (i) => i.complete && i.naturalWidth > 0;
-  const TIPS = ES
+  const TIPS = window.AviaI18n?.pack?.tips || (ES
     ? ['Atrapa monedas: cada una impulsa el avión hacia arriba', 'El escudo te salva de un misil', 'El anillo ×5 hace un rizo',
       'Portal: tres misiles, elige hacia dónde esquivar', 'Solo ganas si aterrizas en el portaaviones']
     : RU
     ? ['Лови монеты — каждая подкидывает самолёт вверх', 'Щит спасает от одной ракеты', 'Кольцо ×5 — мёртвая петля',
       'Портал: три ракеты, выбирай куда увернуться', 'Выигрыш твой, только если сел на авианосец']
     : ['Catch coins — each one throws the plane up', 'A shield saves you from one rocket', 'The ×5 ring makes a dead loop',
-      'Portal: three rockets, choose where to dodge', 'You win only if you land on the carrier'];
-  const PLAY = ES ? 'JUGAR' : RU ? 'ИГРАТЬ' : 'PLAY';
+      'Portal: three rockets, choose where to dodge', 'You win only if you land on the carrier']);
+  const PLAY = window.AviaI18n?.pack?.play || (ES ? 'JUGAR' : RU ? 'ИГРАТЬ' : 'PLAY');
   let fontOk = false;
   try { new FontFace('aviaL', 'url(' + R + 'assets/fonts/obelix_sLbZgIId.woff2)').load().then((f) => { document.fonts.add(f); fontOk = true; }); } catch (e) {}
-  const F = (px) => `${px}px ${fontOk ? 'aviaL' : "'Trebuchet MS', sans-serif"}`;
+  const F = (px) => `${px}px ${fontOk && !window.AviaI18n?.pack ? 'aviaL' : "'Trebuchet MS', sans-serif"}`;
 
   let W = 0, H = 0, dpr = 1, u = 1;
   function resize() {
@@ -52,7 +52,7 @@
 
   const rr = (x, y, w, h, r) => { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); };
   const text = (s, x, y, px, fill, stroke, lw) => {
-    g.font = F(px); g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round';
+    g.font = F(px); if(g.measureText(s).width>W*.92)g.font=F(px*W*.92/g.measureText(s).width); g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round';
     if (stroke) { g.lineWidth = lw; g.strokeStyle = stroke; g.strokeText(s, x, y); }
     g.fillStyle = fill; g.fillText(s, x, y);
   };
@@ -158,7 +158,7 @@
       if (tipT > 3.2) { tipT = 0; tipI++; }
       const ta = Math.min(1, tipT / 0.35, (3.2 - tipT) / 0.35);
       g.globalAlpha = (1 - oe) * pa * Math.max(0, ta) * 0.92;
-      text(TIPS[tipI % TIPS.length].toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''), cx, by + bh + 7.8 * u, Math.min(1.9 * u, W / 30), '#e4ecff', '#0b1d4f', 0.35 * u);
+      text(TIPS[tipI % TIPS.length].toUpperCase(), cx, by + bh + 7.8 * u, Math.min(1.9 * u, W / 30), '#e4ecff', '#0b1d4f', 0.35 * u);
       g.globalAlpha = 1 - oe;
     }
     if (ready > 0) {
